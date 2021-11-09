@@ -1,0 +1,22 @@
+{
+  "name": "lambda-email-service",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shuangqiu123/Lambda-Email-Service.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/shuangqiu123/Lambda-Email-Service/issues"
+  },
+  "homepage": "https://github.com/shuangqiu123/Lambda-Email-Service#readme",
+  "dependencies": {
+    "aws-sdk": "^2.1023.0"
+  }
+}
