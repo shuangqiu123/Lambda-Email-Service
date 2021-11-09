@@ -5,7 +5,10 @@ const BUCKET = process.env.BUCKET;
 const DOMAIN = process.env.DOMAIN;
 const SQS_URL = process.env.SQS_URL;
 
-const S3 = new AWS.S3();
+const S3 = new AWS.S3({
+	apiVersion: '2006-03-01',
+	region: REGION
+});
 const SES = new AWS.SES({
 	region: REGION
 });
@@ -28,7 +31,7 @@ const constructTemplate = (() => {
 			})
 			// Afterwards, replace anything that's not ${map.expressions}' (etc) with a blank string.
 			.replace(/(\$\{(?!map\.)[^}]+\})/g, '');
-		fn = Function('map', `return \`${sanitized}\``);
+		let fn = Function('map', `return \`${sanitized}\``);
 		cache[template] = fn;
 
 		return fn;
@@ -36,16 +39,13 @@ const constructTemplate = (() => {
 })();
 
 const handler = async (event, context) => {
-	event.Records.forEach(record => {
+	for (record of event.Records) {
 		const { key, placeholders, toAddresses, ccAddresses, title, agent } = JSON.parse(record.body);
-		S3.getObject({
+		await S3.getObject({
 			Bucket: BUCKET,
 			Key: key
-		}, (error, template) => {
-			if (error) {
-				console.error(error);
-				return;
-			}
+		}).promise().then(async (data) => {
+			const template = data.Body.toString('utf-8');
 			const constructedTemplate = constructTemplate(template);
 			const emailBody = constructedTemplate(placeholders);
 
@@ -69,7 +69,7 @@ const handler = async (event, context) => {
 				Source: `${agent}@${DOMAIN}`
 			};
 
-			SES.sendEmail(SESParams)
+			await SES.sendEmail(SESParams)
 				.promise()
 				.then(result => {
 					console.log("Send Email Sucessfully");
@@ -89,8 +89,10 @@ const handler = async (event, context) => {
 						QueueUrl: SQS_URL
 					});
 				});
+		}).catch(error => {
+			console.log(error);
 		});
-	});
+	}
 };
 
-module.exports.handler = handler;
+exports.handler = handler;
