@@ -2,7 +2,7 @@
 
 ## About
 
-Lambda-Email-Service is a serverless application for sending email using AWS Lambda, S3, SQS, SES. It allows the use of customised email template stored in AWS S3 and the AWS SES to send the email generated from the templates. 
+Lambda-Email-Service is a serverless application for sending emails using AWS Lambda, S3, SQS, SES. It allows the use of customised email template stored in AWS S3 and the AWS SES to send the email generated from the templates. 
 
 ## Application Infrastructure
 ### Terraform
@@ -26,4 +26,4 @@ terraform
 
 ## CI/CD
 
-The application uses GitHub Action as the CI/CD tool with [serverless][https://www.serverless.com/] to deploy to the AWS Cloud.
+The application uses GitHub Action as the CI/CD tool with [serverless](https://www.serverless.com/) to deploy to the AWS Cloud.
